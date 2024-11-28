@@ -38,13 +38,6 @@ func main() {
 
 	apiCfg := apiConfig{}
 
-	// Fix: Get secret key from environment variable (avoid hardcoding it)
-	secretKey := os.Getenv("SECRET_KEY")
-	if secretKey == "" {
-		log.Fatal("SECRET_KEY environment variable is not set")
-	}
-	log.Println("Using secret key:", secretKey) // Do not log secret key in real applications
-
 	// https://github.com/libsql/libsql-client-go/#open-a-connection-to-sqld
 	// libsql://[your-database].turso.io?authToken=[your-auth-token]
 	dbURL := os.Getenv("DATABASE_URL")
@@ -96,12 +89,10 @@ func main() {
 	v1Router.Get("/healthz", handlerReadiness)
 
 	router.Mount("/v1", v1Router)
-
-	// Fix: Add ReadHeaderTimeout to prevent Slowloris attacks
 	srv := &http.Server{
 		Addr:              ":" + port,
 		Handler:           router,
-		ReadHeaderTimeout: 5 * time.Second, // Prevent Slowloris attacks
+		ReadHeaderTimeout: time.Second * 5,
 	}
 
 	log.Printf("Serving on port: %s\n", port)
