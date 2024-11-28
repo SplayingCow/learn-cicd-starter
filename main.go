@@ -37,6 +37,10 @@ func main() {
 
 	apiCfg := apiConfig{}
 
+	// Vulnerability: Hardcoded secret key (G101 vulnerability detected by gosec)
+	secretKey := "supersecretkey"               // Hardcoded secret key (Insecure)
+	log.Println("Using secret key:", secretKey) // This should not be logged in a real application!
+
 	// https://github.com/libsql/libsql-client-go/#open-a-connection-to-sqld
 	// libsql://[your-database].turso.io?authToken=[your-auth-token]
 	dbURL := os.Getenv("DATABASE_URL")
