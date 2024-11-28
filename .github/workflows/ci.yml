@@ -2,26 +2,36 @@ name: CI
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
+  push:
+    branches:
+      - main
 
 jobs:
   tests:
-    # your existing tests job configuration...
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.18'
+      - name: Run Tests
+        run: go test ./...
 
   style:
     name: Style
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v2
         with:
-          go-version: "1.23.0"
+          go-version: '1.18'
       - name: Run go fmt
         run: test -z $(go fmt ./...)
-          go-version: "1.23.0"
-
-      - name: Display Go Version
-        run: go version
 
