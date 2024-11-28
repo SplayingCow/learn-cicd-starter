@@ -21,15 +21,11 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.18'
+          go-version: '1.21'  # Use the most recent Go version
 
       # Install dependencies
       - name: Install dependencies
         run: go mod tidy
-
-      # Run tests
-      - name: Run tests
-        run: go test ./...
 
       # Install gosec for security checks
       - name: Install gosec
@@ -38,4 +34,11 @@ jobs:
       # Run gosec to check for security vulnerabilities
       - name: Run gosec
         run: gosec ./...
+
+      # Run tests
+      - name: Run tests
+        run: go test ./...
+
+
+
 
