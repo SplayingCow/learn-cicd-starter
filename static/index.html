@@ -7,7 +7,8 @@
 </head>
 
 <body class="section">
-    <h1>Notely</h1>
+    <!-- Added Welcome message -->
+    <h1>Welcome to Notely</h1>
 
     <div id="userCreationContainer" class="section">
         <input id="nameField" type="text" placeholder="Enter your name">
@@ -37,17 +38,22 @@
                 return;
             }
             const noteContent = document.getElementById('newNoteContent').value;
-            const response = await fetchWithAlert(`${API_BASE}/notes`,
-                {
-                    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `ApiKey ${currentUserAPIKey}` },
-                    body: JSON.stringify({ note: noteContent })
-                });
+            const response = await fetchWithAlert(`${API_BASE}/notes`, {
+                method: 'POST', 
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'Authorization': `ApiKey ${currentUserAPIKey}` 
+                },
+                body: JSON.stringify({ note: noteContent })
+            });
             const note = await response.json();
             displayNote(note);
         }
 
         async function getUser() {
-            const response = await fetchWithAlert(`${API_BASE}/users`, { headers: { 'Authorization': `ApiKey ${currentUserAPIKey}` } });
+            const response = await fetchWithAlert(`${API_BASE}/users`, { 
+                headers: { 'Authorization': `ApiKey ${currentUserAPIKey}` } 
+            });
             return await response.json();
         }
 
@@ -55,7 +61,9 @@
             if (!currentUser) {
                 return;
             }
-            const response = await fetchWithAlert(`${API_BASE}/notes`, { headers: { 'Authorization': `ApiKey ${currentUserAPIKey}` } });
+            const response = await fetchWithAlert(`${API_BASE}/notes`, { 
+                headers: { 'Authorization': `ApiKey ${currentUserAPIKey}` } 
+            });
             const notes = await response.json();
             const notesContainer = document.getElementById('notes');
             notesContainer.innerHTML = '';
@@ -74,7 +82,7 @@
             const response = await fetchWithAlert(`${API_BASE}/users`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: nameField.value }) // using the value from nameField
+                body: JSON.stringify({ name: nameField.value }) 
             });
             const user = await response.json();
             localStorage.setItem('currentUserAPIKey', user.api_key);
@@ -187,7 +195,6 @@
             margin-bottom: 10px;
         }
     </style>
-    <!-- your existing CSS code... -->
 </body>
 
 </html>
