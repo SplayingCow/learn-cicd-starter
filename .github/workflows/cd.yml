@@ -1,40 +1,36 @@
-name: Continuous Deployment
+name: cd
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  Deploy:
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Check out code
+        uses: actions/checkout@v4
 
-    - name: Set up Go toolchain
-      uses: actions/setup-go@v3
-      with:
-        go-version: '1.23'  # specify the Go version you want to use
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.0'
 
-    - name: Build the app
-      run: ./scripts/buildprod.sh
+      - name: Build app
+        run: ./scripts/buildprod.sh
 
-    - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v1
-      with:
-        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+      - id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-    - name: Configure gcloud
-      run: gcloud config set project cedar-catfish-443215-u7
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
 
-    - name: Deploy to Cloud Run
-      run: |
-        gcloud run deploy notely \
-          --image us-central1-docker.pkg.dev/cedar-catfish-443215-u7/notely-ar-repo/notely:latest \
-          --region us-central1 \
-          --allow-unauthenticated \
-          --project cedar-catfish-443215-u7 \
-          --max-instances=4
+      - name: Build and push Docker image
+        run: gcloud builds submit --tag us-central1-docker.pkg.dev/cedar-catfish-443215-u7/notely-ar-repo/notely:latest .
 
+      - name: Deploy to Cloud Run
+        run: gcloud run deploy notely --image us-central1-docker.pkg.dev/cedar-catfish-443215-u7/notely-ar-repo/notely:latest --region us-central1 --allow-unauthenticated --project cedar-catfish-443215-u7 --max-instances=4
