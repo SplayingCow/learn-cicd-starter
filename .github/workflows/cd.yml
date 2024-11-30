@@ -37,7 +37,8 @@ jobs:
 
       - name: Run database migrations
         run: |
-          goose -dir ./migrations sqlite "$DATABASE_URL" up
+          chmod +x ./scripts/migrateup.sh
+          ./scripts/migrateup.sh
 
       - name: Build and push Docker image
         run: gcloud builds submit --tag us-central1-docker.pkg.dev/cedar-catfish-443215-u7/notely-ar-repo/notely:latest .
@@ -50,3 +51,4 @@ jobs:
             --allow-unauthenticated \
             --project cedar-catfish-443215-u7 \
             --max-instances=4
+
